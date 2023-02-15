@@ -3,20 +3,26 @@ import ListView from "./components/ListView";
 import PostView from "./components/PostView";
 import CreateListForm from "./components/CreateListForm";
 import CreatePostForm from "./components/CreatePostForm";
+import Dashboard from "./components/Dashboard";
+import Header from "./components/Header";
+import Search from "./components/Search";
+import { useState } from 'react';
 
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 function App() {
+
+  const [search, setSearch] = useState('');
   return (
     <div className="App">
-      <h1 className="text-4xl font-normal tracking-widest text-center mt-5">
-        {" "}
-        write it down
-      </h1>
+
+      <Header />
+      <Search handleSearchNote={setSearch} />
+      
 
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<ListView />} />
+          <Route path="/" element={<Dashboard />} />
           <Route path="/create-list" element={<CreateListForm />} />
           <Route path="/lists/:id/posts" element={<PostView />} />
           <Route path="/create-post" element={<CreatePostForm />} />
