@@ -24,17 +24,43 @@ router.get("/:id", async (req, res) => {
     res.status(500).send(err);
   }
 });
-// router.post("/", async (req, res) => {
-//   const title = req.body.title;
-//   const description = req.body.description;
-//   //const createdAt = req.body.createdAt // this should get the timestamp and added to created_at
-//   try {
-//     await db(
-//       `INSERT INTO posts (title, description) value ('${title}',('${description}')`
-//     );
-//     res.status(200).send({ message: "post created" });
-//   } catch (err) {
-//     res.status(500).send(err);
-//   }
-// });
+
+
+//DELETE POST
+
+router.delete("/id", async (req, res) => {
+  const id = Number(req.params.id);
+
+  try {
+    const response = await db(`SELECT * FROM posts WHERE id = ${id}`);
+    const post = response.data[0];
+
+    if(!post) {
+      res.status(404).send();
+      return;
+    }
+    await db(`DELETE FROM posts WHERE id = ${id}`)
+    res.status(200).send({message: "post deleted"});
+  } catch (error) {
+    res.status(500).send(error);
+  }
+});
+
+//POST post
+
+router.post("/", async (req, res, next) => {
+  const title = req.body.title;
+  const text = req.body.text;
+
+  try {
+    const response = await db(`INSERT INTO posts (title, text)
+    value ('${title}', '${text}')`);
+
+    const post = response.data;
+
+    res.send({ post });
+  } catch (error) {
+    res.status(500).send(error)
+  }
+})
 module.exports = router;

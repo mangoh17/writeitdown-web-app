@@ -12,12 +12,12 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 function App() {
 
-  const [search, setSearch] = useState('');
+ 
   return (
     <div className="App">
 
       <Header />
-      <Search handleSearchNote={setSearch} />
+      <Search />
       
 
       <BrowserRouter>

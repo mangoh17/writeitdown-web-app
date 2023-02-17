@@ -1,8 +1,12 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import CreatePostForm from "./CreatePostForm";
 import { useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
+import axios from 'axios';
 function PostView() {
+
+  const BASE_URL = "http://localhost:5000/api";
+
   const [posts, setPosts] = useState([
     // {
     //   title: "ayer hizo frío",
@@ -25,9 +29,28 @@ function PostView() {
   //    };
   //    fetchLists();
   //  }, []);
+
+
+  const getPosts = async () => {
+    const response = await axios(`${BASE_URL}/posts`, {
+      method: 'GET',
+      headers: {
+        "Content-Type": "application/json"
+      }
+    }
+    )
+
+    setPosts(response.data.data)
+    
+  }
+
+  useEffect(() => {
+    getPosts()
+  }, [])
   return (
     <>
       {isPostView ? (
+      
         <div className="flex flex-col border-opacity-50 justify-center items-center">
           <Link to="/">
             <button className="btn btn-sm bg-accent-focus marg mt-10 text-center">
@@ -40,6 +63,18 @@ function PostView() {
                 <h2 className="pb-5 text-lg tracking-wider font-semibold">
                   Here are your posts:
                 </h2>
+                <ul>
+                  {posts.map((post) => {
+                    <li
+                    key={post.id}
+                    >
+                      <p>
+                        {post.title}
+                      </p>
+                      <span>{post.text}</span>
+                    </li>
+                  })}
+                </ul>
               </div>
             ) : (
               <h2 className="pb-5 text-lg tracking-wider font-semibold">

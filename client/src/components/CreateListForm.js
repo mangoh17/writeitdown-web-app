@@ -8,6 +8,7 @@ function CreateListForm({ onSubmit }) {
   const [list, setList] = useState({
     name: "",
     description: "",
+    
   });
   const [isListView, setListView] = useState(false);
 

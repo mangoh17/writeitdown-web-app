@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { MdDeleteForever } from 'react-icons/md'
 
 import CreateListForm from "./CreateListForm";
 const BASE_URL = "http://localhost:5000";
@@ -8,6 +9,9 @@ function ListView(props) {
   const [lists, setLists] = useState([{}]);
   const [listsLength, setListsLength] = useState(lists.length);
   const [isListView, setListView] = useState(true);
+  const [error, setError] = useState("")
+  const query = props.query;
+  
 
   useEffect(() => {
     const fetchLists = async () => {
@@ -19,22 +23,37 @@ function ListView(props) {
     fetchLists();
   }, []);
 
+  const deleteList = async (id) => {
+    try {
+      await fetch(`${BASE_URL}/api/lists/${id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({input: lists})
+      })
+      window.location.reload()
+    } catch(error) {
+      setError("Oops...something went wrong")
+    }
+  }
+
   return (
     <>
       {" "}
       {/* {isListView ? ( */}
-      <div className="flex flex-col border-opacity-50 justify-center items-center">
-        <div className="grid card bg-yellow-200 m-10 p-10 rounded-box place-items-center shadow-xl w-3/5">
+      <div className="container">
+        <div className="list-of-lists"
+        >
           {listsLength !== null ? (
             <div>
-              <h2 className="pb-5 text-lg tracking-wider font-semibold">
-                Here are your lists:
-              </h2>
+            
               <ul>
                 {lists.map((list) => (
                   <Link to="/lists/{id}/posts">
                     <li
-                      className="hover:italic "
+                    //query={lists.filter((list) => list.title.toLowerCase().includes(query))}
+                     className="list-note"
                       key={list.id}
                       onSubmit={props.addList}
                     >
@@ -43,6 +62,7 @@ function ListView(props) {
                         - {list.name}:
                       </p>{" "}
                       <span>{list.description}</span>
+                      <MdDeleteForever onClick={() => deleteList(list.id)}/>
                     </li>
                   </Link>
                 ))}
